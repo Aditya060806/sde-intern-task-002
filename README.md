@@ -151,3 +151,8 @@ pnpm --filter bill-splitter-api cf-typegen
 5. Paste the repository link and the video link in the application form.
 
 We will run `pnpm install && pnpm check && pnpm typecheck && pnpm test` on your repository.
+
+## AI tools
+
+- **Claude Code (Claude Opus 5.5)** wrote the schema, the API routes, the edge-case tests and the web page, and ran `check`, `typecheck` and the tests. I reviewed the code and tested the app in the browser.
+- **Grok 4** suggested schema ideas.
