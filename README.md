@@ -142,6 +142,12 @@ pnpm --filter bill-splitter-api cf-typegen
 - We run extra tests after you submit. They test the cases in "Cases you must handle" more closely.
 
 
+## AI policy
+
+You can use AI tools. Tell us which ones and where in your answers on the form.
+You must understand every line you submit. We check this with your video and in a live call. "The AI wrote it" is not an answer.
+
+
 ## How to submit
 
 1. Click **Use this template**, then **Create a new repository**. Make the repository **public**.
@@ -162,5 +168,6 @@ We will run `pnpm install && pnpm check && pnpm typecheck && pnpm test` on your 
 
 ## AI tools
 
-- **Claude Code (Claude Opus 5.5)** wrote the schema, the API routes, the edge-case tests and the web page, and ran `check`, `typecheck` and the tests. I reviewed the code and tested the app in the browser.
+- **Claude Code (Claude Sonnet 5)** syntax and overlapping of text and compression of codes of the API routes, the edge-case tests and the web page, and ran `check`, `typecheck` and the tests. I reviewed the code and tested the app in the browser.
+also claude made more tests for testing ..... 
 - **Grok 4** suggested schema ideas.
