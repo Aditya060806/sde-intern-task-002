@@ -152,6 +152,14 @@ pnpm --filter bill-splitter-api cf-typegen
 
 We will run `pnpm install && pnpm check && pnpm typecheck && pnpm test` on your repository.
 
+## Decisions
+
+1. **Paying a share is one conditional update.** `UPDATE shares SET paid_at = ?, idempotency_key = ? WHERE id = ? AND bill_id = ? AND paid_at IS NULL RETURNING ...`. D1 runs writes one at a time, so when two requests race, only the first one matches the row. The loser reads the stored key: same key returns the original result with `200`, a different key gets `409`. No locks, no read-then-write gap. The client keeps the same key for a share until the payment succeeds, so retrying after a timeout cannot pay twice.
+
+2. **The database guards the data, not only the code.** Named `CHECK`s reject blank names, non-integer or non-positive totals and negative shares, and require a share to have a key exactly when it is paid. `UNIQUE (bill_id, member_id)` stops a member getting two shares of one bill. Shares carry `home_id` and use two-column foreign keys to `bills (id, home_id)` and `members (id, home_id)`, so a share can never point at a member from another home. The trade-off is a slightly wider shares table, which also makes balance queries simpler.
+
+3. **Member order is an explicit `position` column.** The split gives extra cents to members in the order they were added, so that order must be stable and unambiguous. Timestamps can tie and `rowid` is an implementation detail, so each new member gets `MAX(position) + 1` inside the same `INSERT ... SELECT` that checks the home exists, backed by `UNIQUE (home_id, position)`. The split itself is `floor(total / n)` for everyone plus one cent for the first `total % n` members, and the bill and its shares are written in one batch, so a bill never exists without shares that add up to its total.
+
 ## AI tools
 
 - **Claude Code (Claude Opus 5.5)** wrote the schema, the API routes, the edge-case tests and the web page, and ran `check`, `typecheck` and the tests. I reviewed the code and tested the app in the browser.
